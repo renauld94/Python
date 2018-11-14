@@ -1,21 +1,3 @@
-"""
-Python script for batch geocoding of addresses using the Google Geocoding API.
-
-This script allows for massive lists of addresses to be geocoded for free by pausing when the 
-geocoder hits the free rate limit set by Google (2500 per day).  
-"""
-
-import pandas as pd
-import requests
-import logging
-import time
-
-logger = logging.getLogger("root")
-logger.setLevel(logging.DEBUG)
-# create console handler
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-logger.addHandler(ch)
 
 #------------------ CONFIGURATION -------------------------------
 
@@ -25,9 +7,9 @@ logger.addHandler(ch)
 # With a "Google Maps Geocoding API" key from https://console.developers.google.com/apis/, 
 # the daily limit will be 2500, but at a much faster rate.
 # Example: API_KEY = 
-API_KEY = 'AIzaSyCYEeo68eLxmGKR6XdakBoxNyvk8k8wwdE'
+API_KEY = 'AIzaSyAFGGcmkdib9Ztkii4kjWG8jX9ul0eSpgE'
 # Backoff time sets how many minutes to wait between google pings when your API limit is hit
-BACKOFF_TIME = 30
+BACKOFF_TIME = 1 #30minutes
 # Set your output file name here.
 output_filename = 'coding/codes_rest.csv'
 # Set your input file here
@@ -141,7 +123,7 @@ for address in addresses:
         # If we're over the API limit, backoff for a while and try again later.
         if geocode_result['status'] == 'OVER_QUERY_LIMIT':
             logger.info("Hit Query Limit! Backing off for a bit.")
-            time.sleep(BACKOFF_TIME * 60) # sleep for 30 minutes
+            time.sleep(BACKOFF_TIME * 1) # sleep for 30 minutes
             geocoded = False
         else:
             # If we're ok with API use, save the results
@@ -151,13 +133,16 @@ for address in addresses:
             logger.debug("Geocoded: {}: {}".format(address, geocode_result['status']))
             results.append(geocode_result)           
             geocoded = True
-
+            
+      # Print 2 geocodes and sleep 5 second   
+    if len(results) % 5 == 0:      
+          time.sleep(3)        
     # Print status every 100 addresses
-    if len(results) % 100 == 0:
+    if len(results) % 50 == 0:
     	logger.info("Completed {} of {} address".format(len(results), len(addresses)))
             
     # Every 500 addresses, save progress to file(in case of a failure so you have something!)
-    if len(results) % 500 == 0:
+    if len(results) % 100 == 0:
         pd.DataFrame(results).to_csv("{}_bak".format(output_filename))
 
 # All done
