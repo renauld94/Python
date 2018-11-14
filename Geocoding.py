@@ -7,7 +7,7 @@
 # With a "Google Maps Geocoding API" key from https://console.developers.google.com/apis/, 
 # the daily limit will be 2500, but at a much faster rate.
 # Example: API_KEY = 
-API_KEY = 'AIzaSyAFGGcmkdib9Ztkii4kjWG8jX9ul0eSpgE'
+API_KEY = 'AIzE'
 # Backoff time sets how many minutes to wait between google pings when your API limit is hit
 BACKOFF_TIME = 1 #30minutes
 # Set your output file name here.
